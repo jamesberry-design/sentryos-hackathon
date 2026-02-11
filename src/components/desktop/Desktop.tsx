@@ -6,10 +6,10 @@ import { Taskbar } from './Taskbar'
 import { DesktopIcon } from './DesktopIcon'
 import { Notepad } from './apps/Notepad'
 import { FolderView, FolderItem } from './apps/FolderView'
-import { Chat } from './apps/Chat'
+// import { Chat } from './apps/Chat' // Removed - Chat component broken
 import { SentryStatsTable } from './apps/SentryStatsTable'
 import { useState } from 'react'
-// import * as Sentry from '@sentry/nextjs' // TODO: Initialize Sentry properly
+import * as Sentry from '@sentry/nextjs'
 
 const INSTALL_GUIDE_CONTENT = `# SentryOS Install Guide
 
@@ -61,8 +61,8 @@ function DesktopContent() {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
 
   const openInstallGuide = () => {
-    // Sentry.logger.info('App launched: %s', ['Install Guide'])
-    // Sentry.metrics.increment('app.launched', 1, { tags: { app: 'install-guide' } })
+    // Sentry.addBreadcrumb('App launched: %s', ['Install Guide'])
+    Sentry.metrics.count('app.launched', 1, { attributes: { app: 'install-guide' } })
     openWindow({
       id: 'install-guide',
       title: 'Install Guide.md',
@@ -79,28 +79,9 @@ function DesktopContent() {
     })
   }
 
-  const openChatWindow = () => {
-    // Sentry.logger.info('App launched: %s', ['Chat'])
-    // Sentry.metrics.increment('app.launched', 1, { tags: { app: 'chat' } })
-    openWindow({
-      id: 'chat',
-      title: 'SentryOS Chat',
-      icon: '💬',
-      x: 200,
-      y: 80,
-      width: 500,
-      height: 550,
-      minWidth: 350,
-      minHeight: 400,
-      isMinimized: false,
-      isMaximized: false,
-      content: <Chat />
-    })
-  }
-
   const openAgentsFolder = () => {
-    // Sentry.logger.info('App launched: %s', ['Agents Folder'])
-    // Sentry.metrics.increment('app.launched', 1, { tags: { app: 'agents-folder' } })
+    // Sentry.addBreadcrumb('App launched: %s', ['Agents Folder'])
+    Sentry.metrics.count('app.launched', 1, { attributes: { app: 'agents-folder' } })
     const agentsFolderItems: FolderItem[] = []
 
     openWindow({
@@ -186,14 +167,6 @@ function DesktopContent() {
           onDoubleClick={openAgentsFolder}
           selected={selectedIcon === 'agents-folder'}
           onSelect={() => setSelectedIcon('agents-folder')}
-        />
-        <DesktopIcon
-          id="chat"
-          label="Chat"
-          icon="chat"
-          onDoubleClick={openChatWindow}
-          selected={selectedIcon === 'chat'}
-          onSelect={() => setSelectedIcon('chat')}
         />
       </div>
 
