@@ -7,6 +7,7 @@ import { DesktopIcon } from './DesktopIcon'
 import { Notepad } from './apps/Notepad'
 import { FolderView, FolderItem } from './apps/FolderView'
 import { Chat } from './apps/Chat'
+import { SentryStatsTable } from './apps/SentryStatsTable'
 import { useState } from 'react'
 
 const INSTALL_GUIDE_CONTENT = `# SentryOS Install Guide
@@ -111,6 +112,23 @@ function DesktopContent() {
     })
   }
 
+  const openSentryStats = () => {
+    openWindow({
+      id: 'sentry-stats',
+      title: 'Sentry Platform Stats',
+      icon: '📊',
+      x: 250,
+      y: 150,
+      width: 900,
+      height: 500,
+      minWidth: 600,
+      minHeight: 400,
+      isMinimized: false,
+      isMaximized: false,
+      content: <SentryStatsTable />
+    })
+  }
+
   const handleDesktopClick = () => {
     setSelectedIcon(null)
   }
@@ -145,6 +163,14 @@ function DesktopContent() {
           onDoubleClick={openInstallGuide}
           selected={selectedIcon === 'install-guide'}
           onSelect={() => setSelectedIcon('install-guide')}
+        />
+        <DesktopIcon
+          id="sentry-stats"
+          label="Sentry Stats"
+          icon="chart"
+          onDoubleClick={openSentryStats}
+          selected={selectedIcon === 'sentry-stats'}
+          onSelect={() => setSelectedIcon('sentry-stats')}
         />
         <DesktopIcon
           id="agents-folder"
