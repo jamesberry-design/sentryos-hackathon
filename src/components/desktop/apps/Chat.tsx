@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Send, Bot, User, Loader2, Wrench, Search, Globe, FileText, Terminal } from 'lucide-react'
-import * as Sentry from '@sentry/nextjs'
+// import * as Sentry from '@sentry/nextjs'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
@@ -84,8 +84,8 @@ export function Chat() {
     setIsLoading(true)
     setCurrentTool(null)
 
-    Sentry.logger.info('User sent chat message, conversation length: %d', [messages.length + 1])
-    Sentry.metrics.increment('chat.client.message_sent', 1)
+    // Sentry.logger.info('User sent chat message, conversation length: %d', [messages.length + 1])
+    // Sentry.metrics.increment('chat.client.message_sent', 1)
 
     try {
       const response = await fetch('/api/chat', {
