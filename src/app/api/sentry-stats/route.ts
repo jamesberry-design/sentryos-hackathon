@@ -55,12 +55,12 @@ export async function GET() {
       ),
     }
 
-    // Fetch error event counts and team members for each category
+    // Fetch error event counts, tracing, replays, and team members for each category
     const stats = {
-      ios: { projects: 0, events: 0, members: new Set<string>() },
-      android: { projects: 0, events: 0, members: new Set<string>() },
-      frontend: { projects: 0, events: 0, members: new Set<string>() },
-      backend: { projects: 0, events: 0, members: new Set<string>() },
+      ios: { projects: 0, events: 0, transactions: 0, replays: 0, members: new Set<string>() },
+      android: { projects: 0, events: 0, transactions: 0, replays: 0, members: new Set<string>() },
+      frontend: { projects: 0, events: 0, transactions: 0, replays: 0, members: new Set<string>() },
+      backend: { projects: 0, events: 0, transactions: 0, replays: 0, members: new Set<string>() },
     }
 
     // Process each category
@@ -80,6 +80,32 @@ export async function GET() {
           if (Array.isArray(statsData)) {
             const totalEvents = statsData.reduce((sum, [, count]) => sum + count, 0)
             stats[key].events += totalEvents
+          }
+
+          // Get transaction/tracing count (last 30 days)
+          try {
+            const transactionStats = await fetchSentryData(
+              `/projects/${SENTRY_ORG}/${project.slug}/stats/?stat=received&category=transaction&resolution=1d`
+            )
+            if (Array.isArray(transactionStats)) {
+              const totalTransactions = transactionStats.reduce((sum, [, count]) => sum + count, 0)
+              stats[key].transactions += totalTransactions
+            }
+          } catch (error) {
+            console.error(`Error fetching transaction stats for ${project.slug}:`, error)
+          }
+
+          // Get session replay count (last 30 days)
+          try {
+            const replayStats = await fetchSentryData(
+              `/projects/${SENTRY_ORG}/${project.slug}/stats/?stat=received&category=replay&resolution=1d`
+            )
+            if (Array.isArray(replayStats)) {
+              const totalReplays = replayStats.reduce((sum, [, count]) => sum + count, 0)
+              stats[key].replays += totalReplays
+            }
+          } catch (error) {
+            console.error(`Error fetching replay stats for ${project.slug}:`, error)
           }
 
           // Get teams associated with this project
@@ -109,21 +135,29 @@ export async function GET() {
       ios: {
         projects: stats.ios.projects,
         events: stats.ios.events,
+        transactions: stats.ios.transactions,
+        replays: stats.ios.replays,
         members: stats.ios.members.size,
       },
       android: {
         projects: stats.android.projects,
         events: stats.android.events,
+        transactions: stats.android.transactions,
+        replays: stats.android.replays,
         members: stats.android.members.size,
       },
       frontend: {
         projects: stats.frontend.projects,
         events: stats.frontend.events,
+        transactions: stats.frontend.transactions,
+        replays: stats.frontend.replays,
         members: stats.frontend.members.size,
       },
       backend: {
         projects: stats.backend.projects,
         events: stats.backend.events,
+        transactions: stats.backend.transactions,
+        replays: stats.backend.replays,
         members: stats.backend.members.size,
       },
     }

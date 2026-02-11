@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 interface PlatformStats {
   projects: number
   events: number
+  transactions: number
+  replays: number
   members: number
 }
 
@@ -103,6 +105,36 @@ export function SentryStatsTable() {
                 </td>
                 <td className="p-4 text-center text-white font-mono">
                   {data.backend.events.toLocaleString()}
+                </td>
+              </tr>
+              <tr className="border-b border-[#7553ff]/10 hover:bg-[#7553ff]/5 transition-colors">
+                <td className="p-4 text-gray-300">Transactions (Tracing)</td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.ios.transactions.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.android.transactions.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.frontend.transactions.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.backend.transactions.toLocaleString()}
+                </td>
+              </tr>
+              <tr className="border-b border-[#7553ff]/10 hover:bg-[#7553ff]/5 transition-colors">
+                <td className="p-4 text-gray-300">Session Replays</td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.ios.replays.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.android.replays.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.frontend.replays.toLocaleString()}
+                </td>
+                <td className="p-4 text-center text-white font-mono">
+                  {data.backend.replays.toLocaleString()}
                 </td>
               </tr>
               <tr className="hover:bg-[#7553ff]/5 transition-colors">
